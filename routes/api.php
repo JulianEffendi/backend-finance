@@ -2,17 +2,19 @@
 
 use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Index API
+Route::get('/', function () {
+    return response()->json(['code' => 200, 'message' => 'Tiny Studio App API']);
 });
+
+// Passport Auth
+Route::post('login', 'AuthController@login')->name('login');
+Route::get('unauthorized', 'AuthController@unauthorized')->name('unauthorized');
+Route::post('logout', 'AuthController@logout');
+
+Route::apiResource('transaction-type', 'TransactionTypeController');
+Route::apiResource('transaction', 'TransactionController');
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+    
+// });
