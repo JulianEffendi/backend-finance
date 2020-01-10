@@ -13,7 +13,7 @@ class TransactionTypeRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class TransactionTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|max:191',
+            'category' => 'required|numeric'
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            ApiResponse::error_validation($validator)
+        );
     }
 }

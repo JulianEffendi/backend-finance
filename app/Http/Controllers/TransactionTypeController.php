@@ -31,9 +31,17 @@ class TransactionTypeController extends Controller
      */
     public function store(TransactionTypeRequest $request)
     {
-        $create = TransactionType::create($request->all());
+        DB::beginTransaction();
+        try {
+            $create = TransactionType::create($request->all());
+            DB::commit();
+            
+            return ApiResponse::store($create);
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return ApiResponse::error($e->getMessage(), $e->getCode());
+        }
 
-        return ApiResponse::store($create);
     }
 
     /**
@@ -45,11 +53,19 @@ class TransactionTypeController extends Controller
      */
     public function update(TransactionTypeRequest $request, $id)
     {
-        $data = TransactionType::find($id);
-        if ($data == null) { return ApiResponse::error(); }
-        $data->update($request->all());
+        DB::beginTransaction();
+        try {
+            $data = TransactionType::find($id);
+            if ($data == null) { return ApiResponse::error(); }
 
-        return ApiResponse::update($data);
+            $data->update($request->all());
+            DB::commit();
+    
+            return ApiResponse::update($data);
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return ApiResponse::error($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -60,14 +76,22 @@ class TransactionTypeController extends Controller
      */
     public function destroy($id)
     {
-        $data = TransactionType::find($id);
-        if ($data == null) { return ApiResponse::error(); }
-        // if ($data->countDepartemenRelation() > 0) {
-        //     return ApiResponse::error_relation();
-        // }
+        DB::beginTransaction();
+        try {
+            $data = TransactionType::find($id);
+            if ($data == null) { return ApiResponse::error(); }
+            if ($data->countTransactionRelation() > 0) {
+                return ApiResponse::error_relation();
+            }
+            
+            $data->delete();
 
-        $data->delete();
-        return ApiResponse::delete();
+            DB::commit();
+            return ApiResponse::delete();
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return ApiResponse::error($e->getMessage(), $e->getCode());
+        }
     }
 }
 

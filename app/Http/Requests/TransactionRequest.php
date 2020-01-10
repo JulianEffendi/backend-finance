@@ -13,7 +13,7 @@ class TransactionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,38 @@ class TransactionRequest extends FormRequest
      */
     public function rules()
     {
+        $statusRequired = 'required';
+        if ($this->pending) {
+            $statusRequired = 'nullable';
+        }
+
         return [
-            //
+            'no_transaction' => 'required|unique:finance_transactions,no_transaction',
+            'amount'         => $statusRequired.'|numeric',
+            'date'           => $statusRequired,
+            'type_id'        => 'required|numeric',
+            'file'           => 'nullable|image|mimes:jpeg,jpg,png,gif,JPG,JPEG|max:1024',
         ];
+    }
+
+    /**
+     * Return Custom Attribute For Custom Message
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'no_transaction' => 'No Transaction',
+            'user_id'        => 'User',
+            'type_id'        => 'Transaction Type'
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            ApiResponse::error_validation($validator)
+        );
     }
 }

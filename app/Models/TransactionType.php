@@ -17,6 +17,8 @@ class TransactionType extends Model
         'created_at', 'updated_at'
     ];
 
+    protected $appends = ['category_formatted'];
+
     public $timestamps = true;
 
     public function transactions() {
@@ -26,6 +28,18 @@ class TransactionType extends Model
     public function countTransactionRelation()
     {
         return $this->transactions()->count();
+    }
+
+    public function getCategoryFormattedAttribute()
+    {
+        $category = $this->category;
+        if ($category === 1) {
+            $category = 'Plus';
+        } else {
+            $category = 'Minus';
+        }
+
+        return $category;
     }
 
     public function scopeFilter($query, $request)

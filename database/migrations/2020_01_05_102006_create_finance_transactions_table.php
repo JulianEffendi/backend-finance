@@ -22,15 +22,16 @@ class CreateFinanceTransactionsTable extends Migration
             $table->boolean('is_active')->default(0)->comment('[0]: Not-active, [1]: Active / Sumable');
             $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('type_id');
-            $table->timestamps();
-
+            
             $table->foreign('user_id')
                   ->references('id')
                   ->on('users');
-
-            $table->foreign('type_id')
+                  
+                  $table->foreign('type_id')
                   ->references('id')
                   ->on('finance_transaction_types');
+                  
+            $table->timestamps();
         });
     }
 

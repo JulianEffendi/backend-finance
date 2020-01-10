@@ -12,5 +12,5 @@
 */
 
 Route::get('/', function () {
-    return view('welcome to Tiny Studio App API');
+    return 'welcome to Tiny App API';
 });
