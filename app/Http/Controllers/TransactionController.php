@@ -47,6 +47,7 @@ class TransactionController extends Controller
                     $create->update(['amount' => -$create->amount]);
                 }
             }
+            
             DB::commit();
 
             return ApiResponse::store($create);
@@ -70,13 +71,14 @@ class TransactionController extends Controller
         try {
             $data = Transaction::find($id);
             if ($data == null) { return ApiResponse::error(); }
+
+            $data->update($request->all());
             if (isset($request->mount)) {
                 if ($data->type->category === 2) {
                     $data->update(['amount' => -$data->amount]);
                 }
             }
-            
-            $data->update($request->all());
+
             DB::commit();
 
             return ApiResponse::update($data);
@@ -118,7 +120,14 @@ class TransactionController extends Controller
             $data = Transaction::find($id);
             if ($data == null) { return ApiResponse::error(); }
             
-            $data->update('is_active', true);
+            $request->merge(['is_active' => true]);
+            $data->update($request->all());
+            if (isset($request->mount)) {
+                if ($data->type->category === 2) {
+                    $data->update(['amount' => -$data->amount]);
+                }
+            }
+
             DB::commit();
 
             return ApiResponse::update($data);
