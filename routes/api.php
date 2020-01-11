@@ -26,5 +26,6 @@ Route::group(['middleware' => ['auth:api']], function() {
     Route::prefix('transaction')->group(function () {
         Route::apiResource('', 'TransactionController');
         Route::patch('done/{id}', 'TransactionController@done')->name('transaction.done');
+        Route::get('sum_amount', 'TransactionController@sum_amount')->name('transaction.sum.amount');
     });
 });

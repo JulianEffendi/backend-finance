@@ -111,7 +111,7 @@ class TransactionController extends Controller
         } catch (\Throwable $e) {
             DB::rollback();
         return ApiResponse::error($e->getMessage(), $e->getCode());
-}
+        }
     }
 
     public function done($id)
@@ -136,6 +136,11 @@ class TransactionController extends Controller
             DB::rollback();
             return ApiResponse::error($e->getMessage(), $e->getCode());
         }
+    }
+
+    public function sum_amount() {
+        $data = Transaction::orderBy('updated_at', 'DESC')->where('is_active', true)->sum('amount');
+        return ApiResponse::success($data);
     }
 
     public function lastOrderNumber()
