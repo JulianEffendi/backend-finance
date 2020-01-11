@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use ApiResponse;
-use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
+use App\Service\ApiResponse;
+use App\Models\User;
 use App\Models\TransactionType;
 use App\Http\Requests\TransactionTypeRequest;
 

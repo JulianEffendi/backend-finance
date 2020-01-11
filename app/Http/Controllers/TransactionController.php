@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use DB;
-use ApiResponse;
+use App\Service\ApiResponse;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
 use App\Http\Requests\TransactionRequest;
 
 class TransactionController extends Controller
@@ -41,6 +41,7 @@ class TransactionController extends Controller
     {
         DB::beginTransaction();
         try {
+            $request->merge(['no_transaction' => $this->getLastNoTransaction()]);
             $create = Transaction::create($request->all());
             if (isset($request->mount)) {
                 if ($create->type->category === 2) {
@@ -135,5 +136,29 @@ class TransactionController extends Controller
             DB::rollback();
             return ApiResponse::error($e->getMessage(), $e->getCode());
         }
+    }
+
+    public function lastOrderNumber()
+    {
+        return ApiResponse::success([
+            'no_transaction' => $this->getLastNoTransaction()
+        ]);
+    }
+
+    public function getLastNoTransaction()
+    {
+        $last_data = Transaction::orderBy('id', 'desc')->first();
+        if ($last_data !== null) {
+            $last_no_transaction = $this->splitNoTransaction($last_data->no_transaction);
+        } else {
+            $last_no_transaction = '001';
+        }
+
+        return date('Ym') . str_pad($last_no_transaction + 1, 3, '0', STR_PAD_LEFT);
+    }
+
+    private function splitNoTransaction($last_no_transaction)
+    {
+        return (int) substr($last_no_transaction, -3);
     }
 }

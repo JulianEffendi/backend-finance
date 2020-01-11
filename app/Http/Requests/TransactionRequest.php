@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Service\ApiResponse;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class TransactionRequest extends FormRequest
 {
@@ -29,7 +32,6 @@ class TransactionRequest extends FormRequest
         }
 
         return [
-            'no_transaction' => 'required|unique:finance_transactions,no_transaction',
             'amount'         => $statusRequired.'|numeric',
             'date'           => $statusRequired,
             'type_id'        => 'required|numeric',
