@@ -7,7 +7,7 @@ use App\Models\Transaction;
 
 class TransactionType extends Model
 {
-    protected $table = 'finance_transaction_Types';
+    protected $table = 'finance_transaction_types';
     protected $fillable = [
         'name',
         'category',
