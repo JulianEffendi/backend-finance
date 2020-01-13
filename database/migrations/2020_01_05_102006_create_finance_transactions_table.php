@@ -16,6 +16,7 @@ class CreateFinanceTransactionsTable extends Migration
         Schema::create('finance_transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('no_transaction')->unique();
+            $table->string('name');
             $table->double('amount', 11, 2)->nullable();
             $table->text('file')->nullable();
             $table->dateTime('date')->nullable();
