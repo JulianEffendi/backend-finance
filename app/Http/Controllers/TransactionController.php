@@ -41,7 +41,10 @@ class TransactionController extends Controller
     {
         DB::beginTransaction();
         try {
-            $request->merge(['no_transaction' => $this->getLastNoTransaction()]);
+            $request->merge([
+                'no_transaction' => $this->getLastNoTransaction(),
+                'user_id'        => auth()->user()->id
+            ]);
             $create = Transaction::create($request->all());
             if (isset($request->mount)) {
                 if ($create->type->category === 2) {
