@@ -14,7 +14,7 @@ class TransactionTypeSeeder extends Seeder
     {
         TransactionType::truncate();
         $data = [
-            ['name' => 'Pemasukkan', 'category' => 1],
+            ['name' => 'Pemasukan', 'category' => 1],
             ['name' => 'Pengeluaran', 'category' => 2],
             ['name' => 'Piutang', 'category' => 1],
             ['name' => 'Target', 'category' => 2],
