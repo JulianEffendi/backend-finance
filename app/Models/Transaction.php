@@ -34,7 +34,7 @@ class Transaction extends Model
     }
 
     public function type() {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(TransactionType::class, 'type_id');
     }
 
     public function scopeFilter($query, $request)
