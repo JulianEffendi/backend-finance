@@ -44,6 +44,10 @@ class Transaction extends Model
             $query->where('no_transaction', 'like', '%' . $request->no_transaction . '%');
         }
 
+        if ($request->has('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
         if ($request->has('user')) {
             $query->whereHas('user', function($q) use($request) {
                 $q->where('name', 'like', '%' . $request->user . '%');
