@@ -11,6 +11,7 @@ class Transaction extends Model
     protected $table = 'finance_transactions';
     protected $fillable = [
         'no_transaction',
+        'name',
         'user_id',
         'type_id',
         'amount',
@@ -41,6 +42,10 @@ class Transaction extends Model
     {
         if ($request->has('no_transaction')) {
             $query->where('no_transaction', 'like', '%' . $request->no_transaction . '%');
+        }
+
+        if ($request->has('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
         }
 
         if ($request->has('user')) {
