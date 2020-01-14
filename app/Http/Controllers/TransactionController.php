@@ -73,12 +73,13 @@ class TransactionController extends Controller
             $data = Transaction::find($id);
             if ($data == null) { return ApiResponse::error(); }
             
-            $data = $this->updated($request, $id);
+            $data = $this->updated($data, $request, $id);
             DB::commit();
 
             return ApiResponse::update($data);
 
         } catch (\Throwable $e) {
+            dd($e->getMessage());
             DB::rollback();
             return ApiResponse::error($e->getMessage(), $e->getCode());
         }
@@ -91,7 +92,7 @@ class TransactionController extends Controller
             $data = Transaction::find($id);
             if ($data == null) { return ApiResponse::error(); }
             
-            $data = $this->updated($request, $id, "merged");
+            $data = $this->updated($data, $request, $id, "merged");
 
             DB::commit();
 
@@ -137,7 +138,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    private function updated($request, $id, $merged = null) {
+    private function updated($data, $request, $id, $merged = null) {
         if ($merged !== null) {
             $request->merge(['is_active' => true]);
         }
