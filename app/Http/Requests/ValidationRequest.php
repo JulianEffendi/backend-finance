@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class TransactionTypeRequest extends FormRequest
+class ValidationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +27,22 @@ class TransactionTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'category' => 'required|numeric'
+            'amount'         => 'required|numeric',
+            'date'           => 'required',
+            'file'           => 'nullable|image|mimes:jpeg,jpg,png,gif,JPG,JPEG|max:1024',
+        ];
+    }
+
+    /**
+     * Return Custom Attribute For Custom Message
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'no_transaction' => 'No Transaction',
+            'user_id'        => 'User',
         ];
     }
 

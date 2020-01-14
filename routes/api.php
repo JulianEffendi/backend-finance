@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 // Index API
 Route::get('/', function () {
     return response()->json(['code' => 200, 'message' => 'Tiny App API']);
@@ -21,10 +19,12 @@ Route::group(['middleware' => ['auth:api']], function() {
         ]);
     });
 
+    // Finance => Transaction Type
     Route::apiResource('transaction-type', 'TransactionTypeController');
 
+    // Finance => Transaction
+    Route::apiResource('transaction', 'TransactionController')->except('show');
     Route::prefix('transaction')->group(function () {
-        Route::apiResource('', 'TransactionController');
         Route::patch('done/{id}', 'TransactionController@done')->name('transaction.done');
         Route::get('sum_amount', 'TransactionController@sum_amount')->name('transaction.sum.amount');
     });

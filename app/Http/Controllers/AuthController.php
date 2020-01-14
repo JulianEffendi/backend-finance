@@ -35,9 +35,9 @@ class AuthController extends Controller
 
             // set expire time token
             if ($request->has('remember_me')) {
-                Passport::personalAccessTokensExpireIn(now()->addHours(24));
+                Passport::personalAccessTokensExpireIn(now()->addDays(30));
             } else {
-                Passport::personalAccessTokensExpireIn(now()->addHours(12));
+                Passport::personalAccessTokensExpireIn(now()->addHours(6));
             }
 
             return ApiResponse::success([

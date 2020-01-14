@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Requests\TransactionRequest;
+use App\Http\Requests\ValidationRequest;
 
 class TransactionController extends Controller
 {
@@ -46,11 +47,7 @@ class TransactionController extends Controller
                 'user_id'        => auth()->user()->id
             ]);
             $create = Transaction::create($request->all());
-            if (isset($request->mount)) {
-                if ($create->type->category === 2) {
-                    $create->update(['amount' => -$create->amount]);
-                }
-            }
+            $this->updateAmountType($request, $create);
             
             DB::commit();
 
@@ -75,14 +72,8 @@ class TransactionController extends Controller
         try {
             $data = Transaction::find($id);
             if ($data == null) { return ApiResponse::error(); }
-
-            $data->update($request->all());
-            if (isset($request->mount)) {
-                if ($data->type->category === 2) {
-                    $data->update(['amount' => -$data->amount]);
-                }
-            }
-
+            
+            $data = $this->updated($request, $id);
             DB::commit();
 
             return ApiResponse::update($data);
@@ -91,7 +82,24 @@ class TransactionController extends Controller
             DB::rollback();
             return ApiResponse::error($e->getMessage(), $e->getCode());
         }
+    }
 
+    public function done(ValidationRequest $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $data = Transaction::find($id);
+            if ($data == null) { return ApiResponse::error(); }
+            
+            $data = $this->updated($request, $id, "merged");
+
+            DB::commit();
+
+            return ApiResponse::update($data);
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return ApiResponse::error($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -117,30 +125,6 @@ class TransactionController extends Controller
         }
     }
 
-    public function done($id)
-    {
-        DB::beginTransaction();
-        try {
-            $data = Transaction::find($id);
-            if ($data == null) { return ApiResponse::error(); }
-            
-            $request->merge(['is_active' => true]);
-            $data->update($request->all());
-            if (isset($request->mount)) {
-                if ($data->type->category === 2) {
-                    $data->update(['amount' => -$data->amount]);
-                }
-            }
-
-            DB::commit();
-
-            return ApiResponse::update($data);
-        } catch (\Throwable $e) {
-            DB::rollback();
-            return ApiResponse::error($e->getMessage(), $e->getCode());
-        }
-    }
-
     public function sum_amount() {
         $data = Transaction::orderBy('updated_at', 'DESC')->where('is_active', true)->sum('amount');
         return ApiResponse::success($data);
@@ -151,6 +135,26 @@ class TransactionController extends Controller
         return ApiResponse::success([
             'no_transaction' => $this->getLastNoTransaction()
         ]);
+    }
+
+    private function updated($request, $id, $merged = null) {
+        if ($merged !== null) {
+            $request->merge(['is_active' => true]);
+        }
+        
+        $data->update($request->all());
+        $this->updateAmountType($request, $data);
+
+        return $data;
+        
+    }
+
+    private function updateAmountType($request, $data) {
+        if (isset($request->amount)) {
+            if ($data->type->category === "2") {
+                $data->update(['amount' => -$data->amount]);
+            }
+        }
     }
 
     public function getLastNoTransaction()

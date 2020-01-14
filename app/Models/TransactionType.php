@@ -33,7 +33,7 @@ class TransactionType extends Model
     public function getCategoryFormattedAttribute()
     {
         $category = $this->category;
-        if ($category === 1) {
+        if ($category === "1") {
             $category = 'Plus';
         } else {
             $category = 'Minus';
