@@ -32,6 +32,7 @@ class TransactionRequest extends FormRequest
         }
 
         return [
+            'name'           => 'required|string',
             'amount'         => $statusRequired.'|numeric',
             'date'           => $statusRequired,
             'type_id'        => 'required|numeric',
