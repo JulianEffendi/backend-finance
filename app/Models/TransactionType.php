@@ -18,7 +18,7 @@ class TransactionType extends Model
         'created_at', 'updated_at'
     ];
 
-    protected $appends = ['category_formatted'];
+    protected $appends = ['category_formatted', 'sum_transaction'];
 
     public $timestamps = true;
 
@@ -39,6 +39,13 @@ class TransactionType extends Model
         } else {
             $category = 'Minus';
         }
+
+        return $category;
+    }
+
+    public function getSumTransactionAttribute()
+    {
+        $category = $this->transactions->where('is_active', true)->sum('amount');
 
         return $category;
     }

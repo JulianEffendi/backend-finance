@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Requests\TransactionRequest;
 use App\Http\Requests\ValidationRequest;
+use App\Models\TransactionType;
 
 class TransactionController extends Controller
 {
@@ -159,8 +160,15 @@ class TransactionController extends Controller
     }
 
     public function sum_amount() {
-        $data = Transaction::orderBy('updated_at', 'DESC')->where('is_active', true)->sum('amount');
-        return ApiResponse::success($data);
+      $data = collect();
+      $transType = TransactionType::get();
+      foreach ($transType as $value) {
+        $data->put($value->name, (float)str_replace('-', '', $value->sum_transaction));
+      }
+
+      $amount = Transaction::orderBy('updated_at', 'DESC')->where('is_active', true)->sum('amount');
+      $data = $data->put('Balance', $amount);
+      return ApiResponse::success($data);
     }
 
     public function lastOrderNumber()

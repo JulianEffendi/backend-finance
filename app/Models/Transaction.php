@@ -28,6 +28,8 @@ class Transaction extends Model
         'is_active' => 'boolean'
     ];
 
+    protected $appends = ['amount_formatted'];
+
     public $timestamps = true;
 
     public function user() {
@@ -69,6 +71,11 @@ class Transaction extends Model
         }
 
         return $query;
+    }
+
+    public function getAmountFormattedAttribute()
+    {
+        return (float)str_replace('-', '', $this->amount);
     }
 
     // Nnti ini pake Helper Aja buat hitung Sum nya
