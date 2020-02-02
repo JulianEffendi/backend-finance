@@ -36,7 +36,7 @@ class TransactionRequest extends FormRequest
             'amount'         => $statusRequired.'|numeric',
             'date'           => $statusRequired,
             'type_id'        => 'required|numeric',
-            'file'           => 'nullable|image|mimes:jpeg,jpg,png,gif,JPG,JPEG|max:1024',
+            'image'          => 'nullable|image|mimes:jpeg,jpg,png,gif,JPG,JPEG|max:1024',
         ];
     }
 

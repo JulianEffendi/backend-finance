@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Storage;
 use App\Service\ApiResponse;
 use App\Models\User;
 use App\Models\Transaction;
@@ -46,6 +47,16 @@ class TransactionController extends Controller
                 'no_transaction' => $this->getLastNoTransaction(),
                 'user_id'        => auth()->user()->id
             ]);
+
+            if ($request->image) {
+              $img = $request->file('image');
+              $dir = "1cI87KE6A4Zciq2OANSbEJLpH9-9YNXQ3/"; 
+              $imgName = uniqid() . '_' . $img->getClientOriginalName();
+              Storage::disk('google')->put($dir . $imgName, fopen($img, 'r+'));
+              $url = Storage::disk('google')->url($dir . $imgName);
+              $request->merge(['file' => $url]);
+            }
+
             $create = Transaction::create($request->all());
             $this->updateAmountType($request, $create);
             
@@ -72,6 +83,17 @@ class TransactionController extends Controller
         try {
             $data = Transaction::find($id);
             if ($data == null) { return ApiResponse::error(); }
+
+            // Cari Cara ngecek dia ada atau tidak lalu hapus
+            if ($request->image) {
+              $img = $request->file('image');
+              $imgName = uniqid() . '_' . $img->getClientOriginalName();
+              $dir = "1cI87KE6A4Zciq2OANSbEJLpH9-9YNXQ3/"; 
+              Storage::disk('google')->put($dir . $imgName, fopen($img, 'r+'));
+              $url = Storage::disk('google')->url($dir . $imgName);
+              
+              $request->merge(['file' => $url]);
+            }
             
             $data = $this->updated($data, $request, $id);
             DB::commit();
@@ -91,6 +113,16 @@ class TransactionController extends Controller
         try {
             $data = Transaction::find($id);
             if ($data == null) { return ApiResponse::error(); }
+
+            if ($request->image) {
+              $img = $request->file('image');
+              $imgName = uniqid() . '_' . $img->getClientOriginalName();
+              $dir = "1cI87KE6A4Zciq2OANSbEJLpH9-9YNXQ3/"; 
+              Storage::disk('google')->put($dir . $imgName, fopen($img, 'r+'));
+              $url = Storage::disk('google')->url($dir . $imgName);
+              
+              $request->merge(['file' => $url]);
+            }
             
             $data = $this->updated($data, $request, $id, "merged");
 

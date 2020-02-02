@@ -11,6 +11,7 @@ class TransactionType extends Model
     protected $fillable = [
         'name',
         'category',
+        'is_pending'
     ];
 
     protected $hidden = [
@@ -50,6 +51,10 @@ class TransactionType extends Model
 
         if ($request->has('category')) {
             $query->where('category', $request->category);
+        }
+
+        if ($request->has('is_pending')) {
+            $query->where('is_pending', $request->is_pending);
         }
 
         return $query;

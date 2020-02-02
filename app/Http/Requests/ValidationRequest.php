@@ -29,7 +29,7 @@ class ValidationRequest extends FormRequest
         return [
             'amount'         => 'required|numeric',
             'date'           => 'required',
-            'file'           => 'nullable|image|mimes:jpeg,jpg,png,gif,JPG,JPEG|max:1024',
+            'image'          => 'nullable|image|mimes:jpeg,jpg,png,gif,JPG,JPEG|max:1024',
         ];
     }
 

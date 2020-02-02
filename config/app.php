@@ -174,6 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\GoogleDriverServiceProvider::class,
         // App\Providers\ApiResponseServiceProvider::class,
         // App\Providers\HelpersServiceProvider::class,
 
